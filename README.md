@@ -136,7 +136,7 @@ Results on ShapeNet and KITTI datasets will be added soon.
 This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgements
-This project is inspired by [PoinTr]([https://github.com/hzxie/GRNet](https://github.com/yuxumin/PoinTr)) and [SymmCompletion](https://github.com/HKUST-SAIL/SymmCompletion).
+This project is inspired by [PoinTr](https://github.com/yuxumin/PoinTr) and [SymmCompletion](https://github.com/HKUST-SAIL/SymmCompletion).
 
 ## 📖 Citation
 If you find this work useful, please consider citing:
