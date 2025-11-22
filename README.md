@@ -138,5 +138,11 @@ This project is inspired by [PoinTr](https://github.com/yuxumin/PoinTr) and [Sym
 ## 📖 Citation
 If you find this work useful, please consider citing:
 ```bibtex
-
+@inproceedings{zhang2026simba,
+  title={Simba: Towards High-Fidelity and Geometrically-Consistent Point Cloud Completion via Transformation Diffusion},
+  author={Zhang, Lirui and Zhao, Zhengkai and Zuo, Zhi and Gao, Pan and Qin, Jie},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence (AAAI)},
+  year={2026},
+  url={https://arxiv.org/abs/2511.16161},
+  note={To appear}
 ```
