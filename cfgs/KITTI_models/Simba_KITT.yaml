@@ -1,0 +1,72 @@
+optimizer: {
+  type: AdamW,
+  kwargs: {
+    lr: 0.0002,                # Learning rate
+    weight_decay: 0.0005       # Weight decay (L2 regularization)
+  }
+}
+
+scheduler: {
+  type: WarmUpCosLR,           # Warmup cosine learning rate scheduler
+  kwargs: {
+    warmup_epoch: 20,          # Number of warmup epochs
+    max_epoch: 420,            # Maximum training epochs
+    lr_max: 0.0002,            # Maximum learning rate after warmup
+    lr_min: 0.00001,           # Minimum learning rate at the end
+  }
+}
+
+dataset: {
+  train: { 
+    _base_: cfgs/dataset_configs/PCNCars.yaml, 
+    others: {subset: 'train'}  # Training subset
+  },
+  val: { 
+    _base_: cfgs/dataset_configs/PCNCars.yaml, 
+    others: {subset: 'test'}   # Validation subset
+  },
+  test: { 
+    _base_: cfgs/dataset_configs/KITTI.yaml, 
+    others: {subset: 'test'}   # Test subset (different dataset)
+  }
+}
+
+model: {
+  NAME: DiffSymm,              # Model name
+  pretrain: "./pretrained/SymmGT_best.pth",  # Pretrained weights path from first stage
+  base_model: {
+    NAME: SymmGT,              # Base model architecture
+    up_factors: "2, 8",        # Upsampling factors
+    include_input: False,       # Whether to include input in output
+    coarse_up_factor: 2        # Coarse upsampling factor
+  },
+  up_factors: "2,2,4",         # Upsampling factors for current model
+  include_input: False,        # Whether to include input in output
+  coarse_up_factor: 2,         # Coarse upsampling factor
+  diffusion_cfg: {             # Diffusion model configuration
+    timesteps: 100,            # Number of diffusion steps during training
+    beta_schedule: "linear",   # Beta scheduling strategy
+    linear_start: 0.001,       # Starting value for linear schedule
+    linear_end: 0.05,          # Ending value for linear schedule
+    parameterization: "eps",   # Parameterization method (epsilon)
+    training_mode: 'proxy_generation',  # Training mode
+    # DDIM specific configurations
+    ddim_num_steps: 25,        # DDIM sampling steps (for inference)
+    ddim_discretize: "uniform",  # Timestep selection method: uniform or quad
+    ddim_eta: 0.0,             # Randomness parameter (0=deterministic, 1=DDPM equivalent)
+    ddim_clip_denoised: True,  # Whether to clip results during DDIM sampling
+    clip_denoised: True,       # Whether to clip during training
+    v_posterior: 0.0,          # Posterior variance adjustment parameter
+    cosine_s: 0.008,           # Cosine schedule parameter
+  }
+}
+
+total_bs: 16                   # Total batch size
+step_per_update: 1             # Gradient accumulation steps
+max_epoch: 420                 # Maximum training epochs
+val_freq: 10                   # Validation frequency (every 10 epochs)
+num_proxy_steps: 10            # Number of proxy reverse diffusion steps
+consider_metric: CDL1          # Primary metric to consider (Chamfer Distance L1)
+
+# Training Losses = ['44.4153', '8.2504', '0.0068'] --> sparse_loss(CDL1), dense_loss(CDL1), mse_loss
+# Validation Losses = ['37.4845', '9.5724', '6.5911', '0.1990'] --> ['SparseLossL1', 'SparseLossL2', 'DenseLossL1', 'DenseLossL2']

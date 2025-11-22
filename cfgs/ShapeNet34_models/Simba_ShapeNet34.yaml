@@ -1,0 +1,67 @@
+optimizer: {
+  type: AdamW,
+  kwargs: {
+    lr: 0.0002,                # Learning rate
+    weight_decay: 0.0005       # L2 regularization (weight decay)
+  }
+}
+
+scheduler: {
+  type: WarmUpCosLR,           # Warmup + Cosine learning rate scheduler
+  kwargs: {
+    warmup_epoch: 20,          # Number of warmup epochs
+    max_epoch: 420,            # Total training epochs
+    lr_max: 0.0002,            # Maximum learning rate (after warmup)
+    lr_min: 0.00001,           # Minimum learning rate (final)
+  }
+}
+
+dataset: {
+  train: {
+    _base_: cfgs/dataset_configs/ShapeNet-34.yaml,
+    others: {subset: 'train'}  # Training split
+  },
+  val: {
+    _base_: cfgs/dataset_configs/ShapeNet-34.yaml,
+    others: {subset: 'test'}   # Validation split
+  },
+  test: {
+    _base_: cfgs/dataset_configs/ShapeNet-34.yaml,
+    others: {subset: 'test'}   # Test split
+  }
+}
+
+model: {
+  NAME: DiffSymm,              # Model name
+  pretrain: "./pretrained/SymmGT_ShapeNet34.pth",  # Pretrained weights from first stage
+  base_model: {
+    NAME: SymmGT               # Base model architecture
+  },
+  up_factors: "2, 2, 2",       # Upsampling factors
+  diffusion_cfg: {             # Diffusion model settings
+    timesteps: 100,            # Number of diffusion steps (training)
+    beta_schedule: "linear",   # Noise scheduling strategy
+    linear_start: 0.001,       # Starting beta value
+    linear_end: 0.04,          # Ending beta value
+    parameterization: "eps",   # Prediction target (epsilon/noise)
+    training_mode: 'proxy_generation',  # Training strategy
+    # DDIM-specific settings
+    ddim_num_steps: 25,        # Sampling steps (inference)
+    ddim_discretize: "uniform",  # Timestep spacing (uniform/quad)
+    ddim_eta: 0.0,             # Stochasticity (0=deterministic)
+    ddim_clip_denoised: True,  # Clip denoised samples (inference)
+    clip_denoised: True,       # Clip denoised samples (training)
+    v_posterior: 0.0,          # Posterior variance weighting
+    cosine_s: 0.008            # Cosine schedule offset
+  }
+}
+
+total_bs: 44                   # Total batch size
+step_per_update: 1             # Gradient accumulation steps
+max_epoch: 420                 # Maximum training epochs
+val_freq: 10                   # Validation frequency (epochs)
+num_proxy_steps: 10            # Proxy reverse diffusion steps
+consider_metric: CDL2          # Primary evaluation metric (Chamfer Distance L2)
+
+# Training Losses = ['44.4153', '8.2504', '0.0068'] --> sparse_loss(CDL1), dense_loss(CDL1), mse_loss
+# Validation Losses = ['37.4845', '9.5724', '6.5911', '0.1990'] --> ['SparseLossL1', 'SparseLossL2', 'DenseLossL1', 'DenseLossL2']

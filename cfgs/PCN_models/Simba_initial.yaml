@@ -1,0 +1,74 @@
+optimizer: {
+  type: AdamW,  # Optimizer type: AdamW, commonly used for its decoupled weight decay
+  kwargs: {
+    lr: 0.0002,  # Initial learning rate
+    weight_decay: 0.0005  # Weight decay regularization
+  }
+}
+
+scheduler: {
+  type: WarmUpCosLR,  # Learning rate scheduler: warm-up followed by cosine decay
+  kwargs: {
+    warmup_epoch: 20,     # Number of epochs for linear warm-up
+    max_epoch: 420,       # Total training epochs
+    lr_max: 0.0002,       # Maximum learning rate after warm-up
+    lr_min: 0.00001,      # Minimum learning rate at the end of training
+  }
+}
+
+dataset: {
+  train: { 
+    _base_: cfgs/dataset_configs/PCN.yaml,  # Base config for the PCN dataset
+    others: {subset: 'train'}  # Use training split
+  },
+  val: { 
+    _base_: cfgs/dataset_configs/PCN.yaml,
+    others: {subset: 'test'}  # Use test split for validation
+  },
+  test: { 
+    _base_: cfgs/dataset_configs/PCN.yaml,
+    others: {subset: 'test'}  # Use test split for testing
+  }
+}
+
+model: {
+  NAME: Simba_initial,  # Model name / tag, suitable for identifying the early version
+  pretrain: "./pretrained/SymmGT_best.pth",  # Path to pretrained weights from stage 1
+  base_model: {
+    NAME: SymmGT,  # Name of the base model (likely a symmetry-aware generator)
+    up_factors: "2, 8",  # Upsampling ratios at coarse and fine stages
+    include_input: False,  # Whether to concatenate the input to intermediate stages
+    coarse_up_factor: 2  # Coarse stage upsampling factor
+  },
+  up_factors: "2, 8",  # Global upsampling configuration
+  include_input: False,
+  coarse_up_factor: 2,
+  diffusion_cfg: {  
+    timesteps: 200,  # Number of diffusion steps during training
+    beta_schedule: "linear",  # Beta scheduling strategy: linear
+    linear_start: 0.001,  # Starting beta value
+    linear_end: 0.04,  # Ending beta value
+    parameterization: "eps",  # Noise prediction parameterization
+    training_mode: 'proxy_generation',  # Training mode for proxy-based supervision
+    # DDIM-specific configuration
+    ddim_num_steps: 50,  # Number of sampling steps for DDIM during inference
+    ddim_discretize: "uniform",  # Time discretization: 'uniform' or 'quad'
+    ddim_eta: 0.0,  # Stochasticity parameter: 0 = deterministic, 1 = DDPM equivalent
+    ddim_clip_denoised: True,  # Whether to clip outputs during DDIM inference
+    clip_denoised: True,  # Whether to clip predictions during training
+    v_posterior: 0.0,  # Posterior variance adjustment
+    cosine_s: 0.008,  # Scaling factor for cosine schedule (if used)
+  }
+}
+
+total_bs: 16  # Total batch size
+step_per_update: 1  # Gradient accumulation steps (1 = no accumulation)
+max_epoch: 420  # Max number of training epochs
+val_freq: 5  # Validate every 5 epochs
+num_proxy_steps: 3  # Number of backward proxy steps used during diffusion training
+consider_metric: CDL1  # Primary evaluation metric (e.g., Chamfer Distance L1)
+
+# Training  Losses = ['44.4153', '8.2504', '0.0068']
+# --> sparse_loss(CDL1), dense_loss(CDL1), mse_loss
+# Validation Losses = ['37.4845', '9.5724', '6.5911', '0.1990']
+# --> SparseLossL1, SparseLossL2, DenseLossL1, DenseLossL2

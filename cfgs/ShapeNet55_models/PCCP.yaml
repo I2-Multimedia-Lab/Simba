@@ -1,0 +1,43 @@
+optimizer : {
+  type: AdamW,
+  kwargs: {
+  lr : 0.0005, 
+  weight_decay : 0.0005
+}}
+scheduler: {
+  type: LambdaLR,
+  kwargs: {
+  decay_step: 21,
+  lr_decay: 0.76,
+  lowest_decay: 0.02  # min lr = lowest_decay * lr
+}}
+bnmscheduler: {
+  type: Lambda,
+  kwargs: {
+  decay_step: 21,
+  bn_decay: 0.5,
+  bn_momentum: 0.9,
+  lowest_decay: 0.01
+}}
+
+
+dataset : {
+  train : { _base_: cfgs/dataset_configs/ShapeNet-55.yaml, 
+            others: {subset: 'train'}},
+  val : { _base_: cfgs/dataset_configs/ShapeNet-55.yaml, 
+            others: {subset: 'test'}},
+  test : { _base_: cfgs/dataset_configs/ShapeNet-55.yaml, 
+            others: {subset: 'test'}}}     
+            
+model:
+  NAME: LatentDiffusion
+  pretrained_path: "experiments/prepccp/ckpt-best.pth"
+  diffusion_steps: 1000
+  num_heads: 6
+  mlp_ratio: 4
+  qkv_bias: True
+total_bs : 48
+step_per_update : 1
+max_epoch : 600
+
+consider_metric: CDL2
