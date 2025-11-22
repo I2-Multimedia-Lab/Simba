@@ -6,7 +6,7 @@ Simba is an advanced deep learning framework specifically designed for high-qual
 ![Simba Overview](./fig/Simba_Overview.png) <!-- Replace with actual figure path -->
 
 ## 📰 News
-- **2025-11-22** Initial release of Simba repository.
+- **2025-11-22** Initial release of Simba repository and pretrained models.
 - **2025-11-08** Simba accepted at AAAI 2026.
 
 ## 🚀 Features
@@ -16,8 +16,11 @@ Simba is an advanced deep learning framework specifically designed for high-qual
 - Modular and extensible codebase for research and development.
 
 ## 📂 Pretrained Models
-Pretrained models will be provided soon. Stay tuned!
+We provide the  model weights trained on the **PCN dataset** for Stage 2 (Simba). You can download them via Google Drive.
 
+| Model               | Download Link                                                |
+| :------------------ | :----------------------------------------------------------- |
+| **Simba **(Stage 2) | [[Google Drive](https://drive.google.com/file/d/1aYHIjgSCJ6aL4-jpi5oyij6Qqvu7mokX/view?usp=sharing)] |
 ## 🛠️ Installation Guide
 
 ### Prerequisites
