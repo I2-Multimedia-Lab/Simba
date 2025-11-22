@@ -141,10 +141,5 @@ This project is inspired by [GRNet](https://github.com/hzxie/GRNet) and [mmdetec
 ## 📖 Citation
 If you find this work useful, please consider citing:
 ```bibtex
-@article{simba2025,
-  title={Simba: Towards High-Fidelity and Geometrically-Consistent Point Cloud Completion via Transformation Diffusion},
-  author={Your Name and Collaborators},
-  journal={Conference Name},
-  year={2025}
-}
+
 ```
