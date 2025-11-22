@@ -129,9 +129,6 @@ bash scripts/train.sh \
     --output <output_dir>
 ```
 
-## 📈 Results
-Results on ShapeNet and KITTI datasets will be added soon.
-
 ## 📜 License
 This project is licensed under the MIT License.
 
