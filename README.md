@@ -6,7 +6,7 @@ Simba is an advanced deep learning framework specifically designed for high-qual
 ![Simba Overview](./fig/Simba_Overview.png) <!-- Replace with actual figure path -->
 
 ## 📰 News
-- **2025-11-21** Initial release of Simba repository.
+- **2025-11-22** Initial release of Simba repository.
 - **2025-11-08** Simba accepted at AAAI 2026.
 
 ## 🚀 Features
