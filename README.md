@@ -20,7 +20,7 @@ We provide the  model weights trained on the **PCN dataset** for Stage 2 (Simba)
 
 | Model               | Download Link                                                |
 | :------------------ | :----------------------------------------------------------- |
-| **Simba **(Stage 2) | [[Google Drive](https://drive.google.com/file/d/1aYHIjgSCJ6aL4-jpi5oyij6Qqvu7mokX/view?usp=sharing)] |
+| **Simba**(Stage 2) | [[Google Drive](https://drive.google.com/file/d/1aYHIjgSCJ6aL4-jpi5oyij6Qqvu7mokX/view?usp=sharing)] |
 ## 🛠️ Installation Guide
 
 ### Prerequisites
