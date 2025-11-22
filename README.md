@@ -89,8 +89,8 @@ Simba employs a two-stage training process to achieve high-fidelity and geometri
 #### Stage 1: Training the SymmGT Model
 In the first stage, the SymmGT model is trained to generate high-quality intermediate representations. Use the following command to train the SymmGT model:
 ```bash
-CUDA_VISIBLE_DEVICES=0,1,2 bash ./scripts/dist_train.sh 3 13232 \
-    --config ./cfgs/ShapeNet55_models/SymmGT.yaml \
+CUDA_VISIBLE_DEVICES=0,1 bash ./scripts/dist_train.sh 2 13232 \
+    --config ./cfgs/PCN_models/SymmGT.yaml \
     --exp_name SymmGT_stage_1
 ```
 The trained model weights will be saved in the `experiment/SymmGT_stage_1/` directory.
@@ -98,8 +98,8 @@ The trained model weights will be saved in the `experiment/SymmGT_stage_1/` dire
 #### Stage 2: Training the Simba Model
 In the second stage, the Simba model is trained using the pretrained weights from the first stage. Update the `pretrain` field in `cfgs/PCN_models/Simba.yaml` to point to the path of the trained SymmGT model (e.g., `experiment/SymmGT_stage_1/best_model.pth`). Then, run the following command:
 ```bash
-CUDA_VISIBLE_DEVICES=0,1,2 bash ./scripts/dist_train.sh 3 13232 \
-    --config ./cfgs/ShapeNet55_models/Simba.yaml \
+CUDA_VISIBLE_DEVICES=0,1 bash ./scripts/dist_train.sh 2 13232 \
+    --config ./cfgs/PCN_models/Simba.yaml \
     --exp_name Simba_stage_2
 ```
 
